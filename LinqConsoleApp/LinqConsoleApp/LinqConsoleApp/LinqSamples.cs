@@ -334,14 +334,7 @@ namespace LinqConsoleApp
         public void Task10()
         {
 
-             var a =  new
-             {
 
-                 first = "no value",
-                 second = "null",
-                 third = "null"
-
-             };
             var res = Emps.Select(emp => new
             {
 
@@ -352,12 +345,14 @@ namespace LinqConsoleApp
             {
 
 
-                e.Ename,
-                e.Job,
-                e.HireDate
+                Ename="brak wartosci",
+                Job= string.Empty,
+                HireDate= (DateTime?)null
+                
+                
 
 
-            }));
+            })).ToList();
         }
 
         //Find the employee with the highest salary using the Aggregate () method
