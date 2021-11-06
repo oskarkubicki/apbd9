@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Globalization;
 using System.Linq;
-using System.Reflection.PortableExecutable;
 
 namespace LinqConsoleApp
 {
     public class LinqSamples
     {
-        public static IEnumerable<Emp> Emps { get; set; }
-        public static IEnumerable<Dept> Depts { get; set; }
-
         public LinqSamples()
         {
             LoadData();
         }
+
+        public static IEnumerable<Emp> Emps { get; set; }
+        public static IEnumerable<Dept> Depts { get; set; }
 
         public void LoadData()
         {
@@ -23,6 +20,7 @@ namespace LinqConsoleApp
             var deptsCol = new List<Dept>();
 
             #region Load depts
+
             var d1 = new Dept
             {
                 Deptno = 1,
@@ -48,9 +46,11 @@ namespace LinqConsoleApp
             deptsCol.Add(d2);
             deptsCol.Add(d3);
             Depts = deptsCol;
+
             #endregion
 
             #region Load emps
+
             var e1 = new Emp
             {
                 Deptno = 1,
@@ -174,7 +174,6 @@ namespace LinqConsoleApp
             Emps = empsCol;
 
             #endregion
-
         }
 
         /*
@@ -183,7 +182,7 @@ namespace LinqConsoleApp
         */
 
         /// <summary>
-        /// SELECT * FROM Emps WHERE Job = "Backend programmer";
+        ///     SELECT * FROM Emps WHERE Job = "Backend programmer";
         /// </summary>
         public void Task1()
         {
@@ -195,51 +194,38 @@ namespace LinqConsoleApp
 
             //1. Query syntax (SQL)
             var res = from emp in Emps
-                      where emp.Job == "Backend programmer"
-                      select new
-                      {
-                          Nazwisko = emp.Ename,
-                          Zawod = emp.Job
-                      };
-
-
+                where emp.Job == "Backend programmer"
+                select new
+                {
+                    Nazwisko = emp.Ename,
+                    Zawod = emp.Job
+                };
             //2. Lambda and Extension methods
-
-
             var res2 = Emps.Where(emp => emp.Job == "Backend programmer").Select(emp => new
             {
-
                 FirstNAME = emp.Ename,
                 emp.Job,
                 emp.Deptno
             });
         }
-
-
-
         /// <summary>
-        /// SELECT * FROM Emps Job = "Frontend programmer" AND Salary>1000 ORDER BY Ename DESC;
+        ///     SELECT * FROM Emps Job = "Frontend programmer" AND Salary>1000 ORDER BY Ename DESC;
         /// </summary>
         public void Task2()
         {
-
-            var res = Emps.Where(emp => emp.Salary > 1000 && emp.Job == "Frontend programmer").OrderByDescending(e => e.Ename);
-
-
-
+            var res = Emps.Where(emp => emp.Salary > 1000 && emp.Job == "Frontend programmer")
+                .OrderByDescending(e => e.Ename);
         }
-
         /// <summary>
-        /// SELECT MAX(Salary) FROM Emps;
+        ///     SELECT MAX(Salary) FROM Emps;
         /// </summary>
         public void Task3()
         {
             var res = Emps.Max(emp => emp.Salary);
-
         }
 
         /// <summary>
-        /// SELECT * FROM Emps WHERE Salary=(SELECT MAX(Salary) FROM Emps);
+        ///     SELECT * FROM Emps WHERE Salary=(SELECT MAX(Salary) FROM Emps);
         /// </summary>
         public void Task4()
         {
@@ -247,139 +233,99 @@ namespace LinqConsoleApp
         }
 
         /// <summary>
-        /// SELECT ename AS FirstName, job AS EmployeeJob FROM Emps;
+        ///     SELECT ename AS FirstName, job AS EmployeeJob FROM Emps;
         /// </summary>
         public void Task5()
         {
-
             var res = Emps.Select(emp => new
             {
-
                 FirstName = emp.Ename,
                 EmployeeJob = emp.Job
-
-
             });
-
         }
 
         /// <summary>
-        /// SELECT Emps.Ename, Emps.Job, Depts.Dname FROM Emps
-        /// INNER JOIN Depts ON Emps.Deptno=Depts.Deptno
-        /// Result: Joining collections Emps and Depts.
+        ///     SELECT Emps.Ename, Emps.Job, Depts.Dname FROM Emps
+        ///     INNER JOIN Depts ON Emps.Deptno=Depts.Deptno
+        ///     Result: Joining collections Emps and Depts.
         /// </summary>
         public void Task6()
         {
-
-            var res = Emps.Join(Depts, e => e.Deptno, d => d.Deptno, (e, d) => new { e, d }).Select(t => new
+            var res = Emps.Join(Depts, e => e.Deptno, d => d.Deptno, (e, d) => new {e, d}).Select(t => new
             {
-
                 t.d.Dname,
                 t.e.Ename,
                 t.e.Job
             });
-
         }
-
         /// <summary>
-        /// SELECT Job AS EmployeeJob, COUNT(1) EmployeeNuber FROM Emps GROUP BY Job;
+        ///     SELECT Job AS EmployeeJob, COUNT(1) EmployeeNuber FROM Emps GROUP BY Job;
         /// </summary>
         public void Task7()
         {
-
             var res = Emps.Select(emp => new
-            {
-
-
-                EmployeeJob = emp.Job,
-                Employeenumber = Emps.Count(d => d.Job == emp.Job)
-            }
-
-
-
+                {
+                    EmployeeJob = emp.Job,
+                    Employeenumber = Emps.Count(d => d.Job == emp.Job)
+                }
             ).GroupBy(e => e.EmployeeJob);
-
         }
-
-
-
         /// <summary>
-        /// Return value "true" if at least one of 
-        /// the elements of collection works as "Backend programmer".
+        ///     Return value "true" if at least one of
+        ///     the elements of collection works as "Backend programmer".
         /// </summary>
         public void Task8()
         {
-            int k = 8;
-
-
-            bool exists = Emps.Any(emp => emp.Job == "backend programmer");
+            var k = 8;
+            
+            var exists = Emps.Any(emp => emp.Job == "backend programmer");
         }
-
         /// <summary>
-        /// SELECT TOP 1 * FROM Emp WHERE Job="Frontend programmer"
-        /// ORDER BY HireDate DESC;
+        ///     SELECT TOP 1 * FROM Emp WHERE Job="Frontend programmer"
+        ///     ORDER BY HireDate DESC;
         /// </summary>
         public void Task9()
         {
-
-            var res = Emps.Where(emp => emp.Job == "Frontend programmer").OrderByDescending(emp => emp.HireDate).First();
-
+            var res = Emps.Where(emp => emp.Job == "Frontend programmer").OrderByDescending(emp => emp.HireDate)
+                .First();
         }
 
         /// <summary>
-        /// SELECT Ename, Job, Hiredate FROM Emps
-        /// UNION
-        /// SELECT "No value", null, null;
+        ///     SELECT Ename, Job, Hiredate FROM Emps
+        ///     UNION
+        ///     SELECT "No value", null, null;
         /// </summary>
         public void Task10()
         {
-
-
             var res = Emps.Select(emp => new
             {
-
                 emp.Ename,
                 emp.Job,
                 emp.HireDate
             }).Union(Emps.Select(e => new
             {
-
-
-                Ename="brak wartosci",
-                Job= string.Empty,
-                HireDate= (DateTime?)null
-                
-                
-
-
+                Ename = "brak wartosci",
+                Job = string.Empty,
+                HireDate = (DateTime?) null
             })).ToList();
         }
 
         //Find the employee with the highest salary using the Aggregate () method
         public void Task11()
         {
-
-            var res = Emps.Aggregate((largest, next) => next.Salary > largest.Salary ? next :largest ) ;
-
+            var res = Emps.Aggregate((largest, next) => next.Salary > largest.Salary ? next : largest);
         }
 
         //Using the LINQ language and the SelectMany method, 
         //perform a CROSS JOIN join between collections Emps and Depts
         public void Task12()
         {
+            var res = Emps.SelectMany(x => Depts, (x, d) => new {x, d}).Where(t => t.d.Deptno == t.x.Deptno)
+                .Select(t => new {t.d, t.x});
 
-            var res = Emps.SelectMany(x => Depts, (x,d) => new { x, d }).Where(t=> t.d.Deptno==t.x.Deptno).Select(t => new { t.d, t.x});
-
-            int k = 7;
+            var k = 7;
 
             Console.WriteLine(res.First().d.Dname + " " + res.First().x.Ename);
-
         }
     }
 }
-
-
-
-
-
-

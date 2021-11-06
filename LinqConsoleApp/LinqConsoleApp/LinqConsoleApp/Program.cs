@@ -1,15 +1,10 @@
-﻿using System;
-
-namespace LinqConsoleApp
+﻿namespace LinqConsoleApp
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var d = new LinqSamples();
-
-
-           
             d.Task10();
         }
     }
